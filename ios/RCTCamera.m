@@ -64,7 +64,7 @@
 
 - (id)initWithManager:(RCTCameraManager*)manager bridge:(RCTBridge *)bridge
 {
-  
+
   if ((self = [super init])) {
     self.manager = manager;
     self.bridge = bridge;
@@ -148,7 +148,7 @@
             @"y": [NSNumber numberWithDouble:touchPoint.y]
           }
         };
-        [self.bridge.eventDispatcher sendInputEventWithName:@"focusChanged" body:event];
+        [self.bridge.eventDispatcher sendAppEventWithName:@"focusChanged" body:event];
 
         // Show animated rectangle on the touched area
         if (_defaultOnFocusComponent) {
