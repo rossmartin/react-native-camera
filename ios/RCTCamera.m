@@ -68,8 +68,22 @@
   if ((self = [super init])) {
     self.manager = manager;
     self.bridge = bridge;
+
     UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchToZoomRecognizer:)];
     [self addGestureRecognizer:pinchGesture];
+
+    UISwipeGestureRecognizer *rightSwipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(rightSwipeHandle:)];
+    rightSwipeRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
+    [rightSwipeRecognizer setNumberOfTouchesRequired:1];
+    rightSwipeRecognizer.cancelsTouchesInView = YES;
+    [self addGestureRecognizer:rightSwipeRecognizer];
+
+    UISwipeGestureRecognizer *leftSwipeRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(leftSwipeHandle:)];
+    leftSwipeRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
+    [leftSwipeRecognizer setNumberOfTouchesRequired:1];
+    leftSwipeRecognizer.cancelsTouchesInView = YES;
+    [self addGestureRecognizer:leftSwipeRecognizer];
+
     [self.manager initializeCaptureSessionInput:AVMediaTypeVideo];
     [self.manager startSession];
     _multipleTouches = NO;
@@ -128,7 +142,7 @@
 {
     if (!_onFocusChanged) return;
 
-    BOOL allTouchesEnded = ([touches count] == [[event touchesForView:self] count]);
+    BOOL allTouchesEnded = [[event allTouches] count] == 1;
 
     // Do not conflict with zooming and etc.
     if (allTouchesEnded && !_multipleTouches) {
@@ -186,6 +200,16 @@
             self.manager.previewLayer.connection.videoOrientation = orientation;
         }
     });
+}
+
+- (void)rightSwipeHandle:(UISwipeGestureRecognizer*)gestureRecognizer
+{
+
+}
+
+- (void)leftSwipeHandle:(UISwipeGestureRecognizer*)gestureRecognizer
+{
+
 }
 
 @end
