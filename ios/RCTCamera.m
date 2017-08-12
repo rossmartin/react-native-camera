@@ -147,7 +147,7 @@
     // Do not conflict with zooming and etc.
     if (allTouchesEnded && !_multipleTouches) {
         UITouch *touch = [[event allTouches] anyObject];
-        CGPoint touchPoint = [touch locationInView:touch.view];
+        CGPoint touchPoint = [touch locationInView:self.manager.view];
         // Focus camera on this point
         [self.manager focusAtThePoint:touchPoint];
 
