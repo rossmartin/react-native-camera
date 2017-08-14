@@ -295,6 +295,10 @@ export default class Camera extends Component {
     }
     return CameraManager.hasFlash();
   }
+
+  focusAtPoint(point) {
+    return CameraManager.focusAtPoint(point);
+  }
 }
 
 export const constants = Camera.constants;

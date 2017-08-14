@@ -149,10 +149,6 @@
         UITouch *touch = [[event allTouches] anyObject];
         CGPoint touchPoint = [touch locationInView:self.manager.view];
 
-        // specific to my app - prevent focus on top and bottom navbar camera preview content
-        float screenHeight = [[UIScreen mainScreen] bounds].size.height;
-        if (touchPoint.y < 65 || touchPoint.y > (screenHeight - 120)) return;
-
         // Focus camera on this point
         [self.manager focusAtThePoint:touchPoint];
 

@@ -417,6 +417,14 @@ RCT_EXPORT_METHOD(hasFlash:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRej
     resolve(@(device.hasFlash));
 }
 
+RCT_EXPORT_METHOD(focusAtPoint:(NSDictionary *)options) {
+  float x = [[options valueForKey:@"x"] floatValue];
+  float y = [[options valueForKey:@"y"] floatValue];
+
+  CGPoint point = CGPointMake(x, y);
+  [self focusAtThePoint:point];
+}
+
 - (void)startSession {
 #if TARGET_IPHONE_SIMULATOR
   return;
