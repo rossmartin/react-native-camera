@@ -1022,8 +1022,10 @@ didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
                 if([device lockForConfiguration:nil]) {
                     [device setFocusPointOfInterest:cameraViewPoint];
                     [device setFocusMode:AVCaptureFocusModeAutoFocus];
-                    if ([device isExposurePointOfInterestSupported] && [device isExposureModeSupported:AVCaptureExposureModeAutoExpose] && self.exposureDuration == 0) {
+                    if ([device isExposureModeSupported:AVCaptureExposureModeAutoExpose] && self.exposureDuration == 0) {
                         [device setExposureMode:AVCaptureExposureModeAutoExpose];
+                    }
+                    if ([device isExposurePointOfInterestSupported]) {
                         [device setExposurePointOfInterest:cameraViewPoint];
                     }
                     [device unlockForConfiguration];
