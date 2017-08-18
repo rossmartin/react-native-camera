@@ -15,6 +15,9 @@
 
 @property (strong, nonatomic) RCTSensorOrientationChecker * sensorOrientationChecker;
 @property (assign, nonatomic) NSInteger* flashMode;
+@property (assign, nonatomic) float exposureDuration;
+@property (assign, nonatomic) BOOL hasSetOriginalExposureDuration;
+@property (assign, nonatomic) CMTime originalExposureDuration;
 
 @end
 
@@ -276,6 +279,41 @@ RCT_CUSTOM_VIEW_PROPERTY(torchMode, NSInteger, RCTCamera) {
       return;
     }
     [device setTorchMode: torchMode];
+    [device unlockForConfiguration];
+  });
+}
+
+RCT_CUSTOM_VIEW_PROPERTY(exposureDuration, float, RCTCamera) {
+  dispatch_async(self.sessionQueue, ^{
+    float value = [RCTConvert float:json];
+    AVCaptureDevice *device = [self.videoCaptureDeviceInput device];
+    NSError *error = nil;
+
+    if (![device isExposureModeSupported:AVCaptureExposureModeCustom]) {
+      RCTLog(@"this device does not support AVCaptureExposureModeCustom, cannot setExposureModeCustomWithDuration");
+      return;
+    }
+
+    if (![device lockForConfiguration:&error]) {
+      NSLog(@"%@", error);
+      return;
+    }
+
+    if (!self.hasSetOriginalExposureDuration) {
+      self.originalExposureDuration = device.exposureDuration;
+      self.hasSetOriginalExposureDuration = true;
+    }
+
+    self.exposureDuration = value;
+
+    if (value > 0) {
+      int32_t preferredTimeScale = 1000*1000*1000;
+      CMTime duration = CMTimeMakeWithSeconds(value, preferredTimeScale);
+      [device setExposureModeCustomWithDuration:duration ISO:AVCaptureISOCurrent completionHandler:nil];
+    } else {
+      [device setExposureModeCustomWithDuration:self.originalExposureDuration ISO:AVCaptureISOCurrent completionHandler:nil];
+    }
+
     [device unlockForConfiguration];
   });
 }
@@ -984,7 +1022,7 @@ didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
                 if([device lockForConfiguration:nil]) {
                     [device setFocusPointOfInterest:cameraViewPoint];
                     [device setFocusMode:AVCaptureFocusModeAutoFocus];
-                    if ([device isExposurePointOfInterestSupported] && [device isExposureModeSupported:AVCaptureExposureModeAutoExpose]) {
+                    if ([device isExposurePointOfInterestSupported] && [device isExposureModeSupported:AVCaptureExposureModeAutoExpose] && self.exposureDuration == 0) {
                         [device setExposureMode:AVCaptureExposureModeAutoExpose];
                         [device setExposurePointOfInterest:cameraViewPoint];
                     }
