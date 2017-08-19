@@ -128,6 +128,11 @@ RCT_EXPORT_MODULE();
                @"off": @(RCTCameraTorchModeOff),
                @"on": @(RCTCameraTorchModeOn),
                @"auto": @(RCTCameraTorchModeAuto)
+               },
+           @"ExposureMode": @{
+               @"auto": @(RCTCameraExposureModeAuto),
+               @"continuousAuto": @(RCTCameraExposureModeContinuous),
+               @"locked": @(RCTCameraExposureModeLocked)
                }
            };
 }
@@ -461,6 +466,28 @@ RCT_EXPORT_METHOD(focusAtPoint:(NSDictionary *)options) {
 
   CGPoint point = CGPointMake(x, y);
   [self focusAtThePoint:point];
+}
+
+RCT_EXPORT_METHOD(setExposureMode:(NSDictionary *)options) {
+  dispatch_async(self.sessionQueue, ^{
+    AVCaptureExposureMode mode = [[options valueForKey:@"mode"] intValue];
+    AVCaptureDevice *device = [self.videoCaptureDeviceInput device];
+    NSError *error = nil;
+
+    if (![device isExposureModeSupported:mode]) {
+      RCTLog(@"this device does not support the passed exposure mode");
+      return;
+    }
+
+    if (![device lockForConfiguration:&error]) {
+      NSLog(@"%@", error);
+      return;
+    }
+
+    [device setExposureMode:mode];
+
+    [device unlockForConfiguration];
+  });
 }
 
 - (void)startSession {

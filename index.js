@@ -69,7 +69,8 @@ export default class Camera extends Component {
     CaptureQuality: CameraManager.CaptureQuality,
     Orientation: CameraManager.Orientation,
     FlashMode: CameraManager.FlashMode,
-    TorchMode: CameraManager.TorchMode
+    TorchMode: CameraManager.TorchMode,
+    ExposureMode: CameraManager.ExposureMode
   };
 
   static propTypes = {
@@ -300,6 +301,10 @@ export default class Camera extends Component {
 
   focusAtPoint(point) {
     return CameraManager.focusAtPoint(point);
+  }
+
+  setExposureMode(mode) {
+    return CameraManager.setExposureMode(mode);
   }
 }
 

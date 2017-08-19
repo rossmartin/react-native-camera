@@ -56,6 +56,12 @@ typedef NS_ENUM(NSInteger, RCTCameraTorchMode) {
   RCTCameraTorchModeAuto = AVCaptureTorchModeAuto
 };
 
+typedef NS_ENUM(NSInteger, RCTExposureMode) {
+  RCTCameraExposureModeAuto = AVCaptureExposureModeAutoExpose,
+  RCTCameraExposureModeContinuous = AVCaptureExposureModeContinuousAutoExposure,
+  RCTCameraExposureModeLocked = AVCaptureExposureModeLocked
+};
+
 @interface RCTCameraManager : RCTViewManager<AVCaptureMetadataOutputObjectsDelegate, AVCaptureFileOutputRecordingDelegate>
 
 @property (nonatomic, strong) dispatch_queue_t sessionQueue;
